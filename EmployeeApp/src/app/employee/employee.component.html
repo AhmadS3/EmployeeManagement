@@ -1,0 +1,144 @@
+<div class="container">  
+    <h2>Employees Record</h2>   
+    <button type="button" (click)="save()" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Add New Employee</button><br /><br />  
+    <!-- <table class="table table-bordered table-hover">  
+        <thead>  
+            <tr>  
+                <th>  
+                    Name  
+                </th>  
+                <th>  
+                    Designation  
+                </th>  
+                <th>  
+                    Address  
+                </th>  
+                <th>  
+                    salary  
+                </th>
+                <th></th>
+            </tr>  
+        </thead>  
+        <tbody class="tbody">  
+            <tr *ngFor="let emp of employeeService.employees">
+               <td *ngIf="emp._id">{{emp.name}}</td>
+               <td *ngIf="emp._id">{{emp.designation}}</td>
+                <td *ngIf="emp._id">{{emp.address}}</td>
+                <td *ngIf="emp._id">{{emp.salary}}</td>
+                <td><a href="#" data-toggle="modal" data-target="#myModal" (click)="onEdit(emp)">Edit</a> | <a  href="#" (click)="onDelete(emp._id,employeeForm)">Delete</a></td>
+            </tr>
+        </tbody>  
+    </table>   -->
+  </div>  
+ 
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">  
+    <div class="modal-dialog">  
+        <div class="modal-content">  
+            <div class="modal-header">  
+                <button type="button" class="close" data-dismiss="modal">×</button>  
+                <h4 class="modal-title" id="myModalLabel">Add Employee</h4>  
+            </div>  
+            <div class="modal-body">  
+                <form #employeeForm="ngForm" class="form-horizontal">
+                    <input type="hidden" name="_id" #_id="ngModel" [(ngModel)]="employeeService.selectedEmployee._id">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title">Create Employee</h3>
+                        </div>
+                        <div class="panel-body">
+                          <div class="form-group" [class.has-error]="name.invalid && name.touched">
+                            <label class="col-sm-2 control-label" for="fullName">Name</label>
+                            <div class="col-sm-6">
+                              <input required minlength="6" id="name" name='name' #name="ngModel" [(ngModel)]='employeeService.selectedEmployee.name' type="text" class="form-control">
+                              <span class="has-block" *ngIf="name.errors?.required && name.touched">Enter Name</span>
+                              <span class="help-block" *ngIf="name.errors?.minlength && name.touched">Name length shoulb be 6 character</span>
+                            </div>
+                          </div>
+                    
+                          <div class="form-group">
+                            <label class="col-sm-2 control-label" for="designation">Designation</label>
+                            <div class="col-sm-6">
+                              <input id="designation" name="designation" #designation="ngModel" [(ngModel)]='employeeService.selectedEmployee.designation' type="text" class="form-control">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                              <label class="col-sm-2 control-label" for="salary">Salary</label>
+                              <div class="col-sm-6">
+                                  <input id="salary" type="text" name='salary' #salary="ngModel" [(ngModel)]='employeeService.selectedEmployee.salary' class="form-control">
+                              </div>
+                            </div>
+                          <div class="form-group">
+                              <label class="col-sm-2 control-label" for="address">Address</label>
+                              <div class="col-sm-6">
+                                  <textarea id="address"  name='address' [(ngModel)]='employeeService.selectedEmployee.address' class="form-control"></textarea>
+                              </div>
+                            </div>
+                           
+                        </div>
+                        <div class="panel-footer">
+                          <button class="btn btn-primary" (click)='onSubmit(employeeForm)' data-dismiss="modal" [disabled]="!employeeForm.valid" type="button">
+                              <span *ngIf='!update'>Save</span>
+                              <span *ngIf='update'>Update</span>
+                          </button>
+                        </div>
+                      </div>
+                </form>  
+            </div>  
+            
+        </div>  
+    </div>          
+  </div>
+<div class="container mat-elevation-z8">
+
+  <mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+  </mat-form-field>
+
+  <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <!-- Position Column -->
+    <ng-container matColumnDef="index">
+      <mat-header-cell  *matHeaderCellDef> Index </mat-header-cell>
+      <mat-cell *matCellDef="let element; let i = index;">{{i+1}}</mat-cell>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell mat-sort-header *matHeaderCellDef> Name </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+    </ng-container>
+  
+    <!-- Designation Column -->
+    <ng-container matColumnDef="designation">
+      <mat-header-cell mat-sort-header *matHeaderCellDef> Designation </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.designation}} </mat-cell>
+    </ng-container>
+  
+    <!-- Address Column -->
+    <ng-container matColumnDef="address">
+      <mat-header-cell *matHeaderCellDef> Address </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.address}} </mat-cell>
+    </ng-container>
+
+    <!-- Salary Column -->
+    <ng-container matColumnDef="salary">
+      <mat-header-cell mat-sort-header *matHeaderCellDef> Salary </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.salary}} </mat-cell>
+    </ng-container>
+    <ng-container  matColumnDef="_id">
+      <mat-header-cell [hidden]="true" mat-sort-header *matHeaderCellDef> _id </mat-header-cell>
+      <mat-cell [hidden]="true" *matCellDef="let element"> {{element._id}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <a href="#" data-toggle="modal" data-target="#myModal" (click)="onEdit(row)">Edit</a> | <a  href="#" (click)="onDelete(row._id,employeeForm)">Delete</a>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+   
+  </mat-table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+</div>
